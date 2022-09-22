@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="static/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <link rel="icon" type="image/x-icon" href="static/assets/car.ico" />
+    <title>B2C AUTO INNOV - Formulaire</title>
+  </head>
+  <body class="bg-dark">
+    <div class="container">
+        <div class="row">
+            <div class="card mt-50" style="width: 100%;height:100%">
+                <div class="card-header">
+                    <div class="col-12" style="text-align: center;">
+                        <h1></h1>
+                        <a class="navbar-brand"  href="/"><img src="static/assets/LOGO.png" alt="..." /></a>
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post"  accept-charset="utf-8" >
+                    <div class="sub-entry">
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Marque</b></label>
+                            <select  class="selectpicker form-control" name="marque" id="marque" required="1" onchange="">
+                                {% for marque in Marques %}
+                                <option value="{{marque}}">{{marque}}</option>
+                               {% endfor %}
+                            </select>
+
+                        </div>
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Modèle</b></label>
+                            <select  class="selectpicker form-control" name="car_model" id="car_model" required="1">
+                                {% for model in Models %}
+                                <option value="{{model}}">{{model}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Année du modèle</b></label>
+                            <input class="form-control" type="text" name="annee" id="annee" required="1">
+                        </div>
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Carburant</b></label>
+                            <select  class="selectpicker form-control" name="carburant" id="carburant" required="1">
+                                {% for carb in Carburant %}
+                                <option value="{{carb}}">{{carb}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sub-entry">
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Boite à vitesse</b></label>
+                            <select  class="selectpicker form-control" name="boite" id="boite" required="1">
+                                {% for bt in  BoiteVitesse %}
+                                <option value="{{bt}}">{{bt}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Kilométrage</b></label>
+                            <input class="form-control" type="text" name="km" id="km " required>
+                        </div>
+                        
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <label for=""><b>Puissance fiscale</b></label>
+                            <input class="form-control" type="text" name="pf" id="pf ">
+                        </div>
+                        <br>
+                        <div class="col-10 form-group" style="text-align: center;">
+                            <button style="background-color:black; " class="btn btn-primary form-control"  onclick="send_data()">Estimer le prix</button>
+
+                        </div>
+                    </div>
+                    </form>
+                    <br>
+                    <div class="row">
+                        <div class="col-10" style="text-align:center ;">
+                            <h3> <span id="prediction"></span></h3>
+                        
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+   <script>
+     
+
+
+ 
+
+     function form_handler(event){
+        event.preventDefault();
+     }
+
+     function send_data(){
+         document.querySelector('form').addEventListener('submit',form_handler);
+         var fd = new FormData(document.querySelector('form'));
+         var xhr = new XMLHttpRequest();
+         xhr.open('POST','/predict',true);
+         document.getElementById("prediction").innerHTML="Patientez SVP ! Calcul en cours ...";
+         xhr.onreadystatechange=function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                document.getElementById("prediction").innerHTML="Le prix estimé pour ce véhicule est : "+xhr.responseText+" €";
+            }
+         }
+
+         xhr.onload=function(){};
+         xhr.send(fd);
+     }
+   </script>
+   
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
